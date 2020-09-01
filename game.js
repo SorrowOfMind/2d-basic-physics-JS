@@ -14,6 +14,27 @@ const player = {
     jumping: false
 };
 
+const controller = {
+    right: false,
+    let: false,
+    up: false,
+
+    checkKeys (e) {
+        let keyState = (e.type === 'keydown') ? true : false;
+        switch (e.keyCode) {
+            case 37:
+                controller.left = keyState;
+                break;
+            case 38:
+                controller.up = keyState;
+                break;
+            case 39:
+                controller.right = keyState;
+                break;
+        }
+    }
+}
+
 const draw = () => {
     ctx.fillStyle = '#05DAF9';
     ctx.fillRect(0,0,width,height);
