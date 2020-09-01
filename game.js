@@ -11,7 +11,9 @@ const player = {
     y: SIZE,
     velX: 0,
     velY: 0,
-    jumping: false
+    jumping: false,
+    jumpForce: 40,
+    speed: 1
 };
 
 const controller = {
@@ -35,15 +37,15 @@ const controller = {
     }
 }
 
-const addMovement = () => {
+const addMovement = ({jumpForce, speed}) => {
     if (controller.left) {
-        player.velX -= 0.5;
+        player.velX -= speed;
     }
     if (controller.right) {
-        player.velX += 0.5;
+        player.velX += speed;
     }
     if (controller.up && player.jumping === false) {
-        player.velY -= 20;
+        player.velY -= jumpForce;
         player.jumping = true;
     }
 }
@@ -56,6 +58,14 @@ const simulatePhysics = (gravity, friction) => {
     player.velY *= friction;
 }
 
+const detectCollision = () => {
+    if (player.y > height - SIZE*2) {
+        player.y = height - SIZE*2;
+        player.jumping = false;
+    };
+    if (player.x + SIZE < 0) player.x = width;
+    if (player.x - SIZE > width) player.x = 0;
+}
 
 const draw = () => {
     ctx.fillStyle = '#05DAF9';
@@ -72,8 +82,9 @@ const draw = () => {
 
 const gameLoop = () => {
     draw()
-    addMovement();
+    addMovement(player);
     simulatePhysics(1.5, 0.8);
+    detectCollision();
 
     window.requestAnimationFrame(gameLoop);
 }
