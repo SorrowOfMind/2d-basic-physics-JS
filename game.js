@@ -35,6 +35,28 @@ const controller = {
     }
 }
 
+const addMovement = () => {
+    if (controller.left) {
+        player.velX -= 0.5;
+    }
+    if (controller.right) {
+        player.velX += 0.5;
+    }
+    if (controller.up && player.jumping === false) {
+        player.velY -= 20;
+        player.jumping = true;
+    }
+}
+
+const simulatePhysics = (gravity, friction) => {
+    player.velY += gravity;
+    player.x += player.velX;
+    player.y += player.velY;
+    player.velX *= friction;
+    player.velY *= friction;
+}
+
+
 const draw = () => {
     ctx.fillStyle = '#05DAF9';
     ctx.fillRect(0,0,width,height);
@@ -50,10 +72,12 @@ const draw = () => {
 
 const gameLoop = () => {
     draw()
-
-
+    addMovement();
+    simulatePhysics(1.5, 0.8);
 
     window.requestAnimationFrame(gameLoop);
 }
 
+window.addEventListener('keydown', controller.checkKeys);
+window.addEventListener('keyup', controller.checkKeys);
 window.requestAnimationFrame(gameLoop);
